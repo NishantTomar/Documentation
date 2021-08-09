@@ -1,0 +1,899 @@
+=============================================================
+		STRING AND STRING BUFFER
+=============================================================
+
+>>String objects are immutable
+>>String Buffer objects are mutable 
+
+
+>>immutable means not changeale. 
+>>mutable means change able.
+
+
+-------
+case 1:
+-------
+
+**STRING**
+
+String s = new String("Durga"); //1
+s.concat("software");//2
+sopln(s);
+
+>>op: Durga
+
+1. so a object will be created of string pointing to "Durga"
+
+		      -------
+	s  --------> | Durga |
+		      -------
+2. a new object will be created with the changes .
+
+		------------------
+		| DurgaSoftware  |
+		------------------
+But nothing will be pointing to it as "s" is String object and is immutable.
+and we are not using any reffrence for it.
+therefore it will be available for  garbage collector.
+
+>>So we cannot make any changes to the String object.
+
+-------------
+
+**STRINGBUFFER**
+
+StringBuffer sb = new StringBuffer("Durga"); //1
+sb.append("software");//2
+sopln(sb);
+
+>>op: Durgasoftware
+
+
+
+1. so a object will be created of string pointing to "Durga"
+
+		      -------
+	s  --------> | Durga |
+		      -------
+2. software will be added to this object .
+
+
+		------------------
+     s ----->	| DurgaSoftware  |
+		------------------
+
+>>so here we can perform any changes in StringBuffer object.
+>>because it is mutable.
+
+
+===============================================================
+	"==" OPERATOR vs equals() method
+================================================================
+
+
+case 2:
+-------
+
+String s1 = new String("durga");
+String s2= new String("durga");
+
+sopln(s1 == s2);//1
+sopln(s1.equals(s2));
+
+>>o/p
+	False 
+	True
+
+		       -------
+	s1  --------> | Durga |
+		       -------
+		       -------
+	s2  --------> | Durga |
+		       -------
+
+
+
+1. "==" operator is ment for reference comparision,
+   means if both the references are pointing to same object then it returns true.
+
+	here s1 and s2 are pointing to different objects,
+	Therefore False
+
+2. 		Object-->equals() //-->> reference / address comparision
+		  /\
+		 /  \
+		/    \
+	String		StringBuffer
+
+by default Object class has 11 methods and 1 private method
+which are required for every class , every object
+equals() method is also present there ment for reference / address comparision which is same as "==" operator
+
+>> but in child class String equals() method is overwridden for content comparission
+
+	Therefore we get True
+
+-----------------------------------------------------
+
+StringBuffer sb1 = new StringBuffer("durga");
+StringBuffer sb2= new StringBuffer("durga");
+
+sopln(sb1 == sb2);//1
+sopln(sb1.equals(sb2));//2
+
+>>o/p
+	False
+	False
+
+1. "==" operator is ment for reference comparision,
+   means if both the references are pointing to same object then it returns true.
+
+	here s1 and s2 are pointing to different objects,
+	Therefore False
+
+2. equals method in StringBuffer is not overridden so it is meant for refference/address comparision
+
+	Therefore False
+
+
+===============================================================
+	Heap and String Constant pool
+================================================================
+
+
+String s = new String("Durga");
+
+>>2 objects will be created
+
+	Heap area		|		SCP
+				|
+	s--->| Durga |		|		| Durga |
+ 				| >>this object is created by string object literal "Durga"
+				| >> no explicit reffernce variable but implicit reffrence var maintained by jvm
+				| >> need of this for reusing same object in future
+				| >> not available for garbage collection because implicit refference var. maintained by jvm
+				| >> until 1.6V scp part of method area/PERMGEN 
+				| >> 1.7v heap area
+
+
+
+
+String s = "Durga";
+
+>>1 object created
+
+	SCP
+ 
+s----> | Durga |
+
+>>now jvm checks wether there is allready a object in scp with this content if it is present then it will use it otherwise create a one
+
+------------------------------------------------
+
+
+String s1 = new String("Durga");
+String s2 = new String("Durga");
+String s3 = "Durga";
+String s4 = "Durga";
+
+>>3objects created
+	2 in heap and 1 in scp
+
+		Heap		|		SCP
+				|
+	s1---> |Durga|		|	      |   Durga   |
+				|		^	^
+	s2---> |Durga|		|		|	|
+				|	s3------|	|
+				|		  s4----|
+
+------------------------------------------------------------
+
+String s= new String("durga");
+s.concat("Software");
+s = s.concat("Solutions");//3
+
+
+>>6objects 
+	3 in heap 3 in scp
+
+
+		Heap		|		SCP
+				|
+	s--->X |Durga|		|	      |   Durga   |
+				|		
+	 |DurgaSoftware|	|		|Software|
+				|	
+s---->	|DurgaSolutions|	|		|Solutions|
+
+
+>> earlier s was pointing to Durga but in line 3 s is now pointing to newly created object DurgaSolutions
+>> now Durga and DurgaSoftware are available for garbage collector in Heap
+
+------------------------------------------------------------
+
+String s1 = new String("spring");
+s1.concat("Fall");
+String s2 = s1.concat("winter");
+s2.concat("Summer");
+sopln (s1);
+sopln(s2);
+
+
+>>8objects created
+	4 in heap 4 in scp
+--------------o/p-----------------
+
+spring
+springWinter
+
+
+		Heap		|		SCP
+				|
+	s1---> |spring|		|	      |   spring  |
+				|		
+	 |springFall|		|		|Fall|
+				|	
+s2---->	|springWinter|		|		|Winter|
+				|
+	|springWinterSummer|	|		|Summer|
+
+---------------------------------------------------------------------
+
+
+
+String s1=new String("You cannot change me");
+String s2=new String("You cannot change me");
+Sopln(s1==s2); //False
+
+String s3="You cannot change me";
+Sopln(s1==s3);//False
+
+String s4="You cannot change me";
+Sopln(s3==s4);//True
+
+String s5="You cannot"+" change me";//operation performed at compile time bcz both constant
+Sopln(s4==s5);//True
+
+
+String s6="You cannot";
+String s7= s6 + " change me";//operation performed at runtime only 1 constant and other is var
+Sopln(s7==s4);//False
+
+final String s8 = "you cannot";
+String s9 =  s8+"change me";//as s8 is final so it will be replaced at compile time only and serve as constant so it will be same as s5.
+sopln(s4==s9);//True
+
+		Heap		|		SCP
+				|
+	s1---> |ycc me|		|	     |ycc me|
+				|		^
+	s2---> |ycc me|		|		|
+				|		|
+s7---->	|ycc me|		|	       s3,s4,s5,s9
+				|	s6-->|you cannot|<--s8
+				|	|change me|
+
+=========================================================================================
+	Advantace /importance of STRING CONSTANT POOL (scp)
+=========================================================================================
+
+1. same object an be reused with multiple refferences,
+	so, instead of creating 1 crore object 1 object can be used with 1 crore refferences
+
+	Performance improved
+ 	Memory utilization improved	
+
+	v1,v2,v3,v4.....,v100------>|Hyderabad|
+
+
+DISADVANTAGE
+1. if one person changes its city value rest all will suffer and appliacation start working abnormally.
+
+So to prevent this Imutability concept was developed
+	therefore now only the person that want to change city a new object with that city name created and that poerson will point to it.
+
+		v3---->|Delhi|
+		v1,v2,v4,v5...,v100--->|Hyderabad|
+
+==============================================================================================
+	IMP FAQs on string and stringbuffer
+==============================================================================================
+
+
+1. Why scp concept only for String object but not for StringBuffer?
+
+  >> Because String most commonly used object in java. Thats why java provide scp for String.
+  >> String is regular customer while StringBuffer is not.
+
+2. Why String objects are immutable where as StringBuffer is mutable?
+
+  >> Because of scp 
+	if one person changes its city value rest all will suffer and appliacation start working abnormally.
+
+3. In additions to String any other objects are Imuttable in java?
+
+  >>All Wrapper class objects.
+
+===================================================================================================
+	Important constructors of String class
+===================================================================================================
+
+1. String s = new String();//creates an empty String object
+
+2. String s = new String(String literal);
+
+3. String s = new String(StringBuffer sb);
+
+4. String s = new String(StringBuilder sb);
+
+5. String s = new String(char[] ch);
+
+6. String s = new String(byte[] b);
+
+char[] ch={'j','a','v','a'};
+String s = new String(ch);
+sopln(s);//java
+-----------------------------
+
+byte range= -128 to 127
+
+byte[] b={97,98,99,100};
+String s = new String(b);
+sopln(s);//abcd
+
+
+//corresponding byte values converted to the char value.
+
+============================================================================================
+`	Important Methods of String class: charAt(),concat(),equals(),equalsIgnoreCase()
+============================================================================================
+
+1. public char charAt(int index)
+
+	String s = "durga"
+		    |||||
+		    01234
+
+	sopln(s.charAt(3));//g
+	sopln(s.charAt(30));//StringOutofBoundException
+
+2. public String concat(String s)
+
+
+	String s = "durga";
+	s = s.concat("software");
+	sopln(s);//durgasoftware
+
+	also we can use 
+	s = s + "software";
+
+3. public boolean equals(Object o)
+	To check equality of string objects
+
+	String s = "DURGA";
+	sopln(s.equals("durga"));//false
+
+4. public boolean equalsIgnoreCase(String s)
+
+		String s = "DURGA";
+		sopln(s.equalsIgnoreCase("durga"));//true
+
+5. public boolean isEmpty()
+	String s="";
+	sopln(s.isEmpty());//True
+
+6. public int length()
+	String s = "durga";
+	sopln(s.length());//5
+	
+	>>length method for string and length variable for array	
+
+
+	>>length variable is also present which is used in array.
+	int[] x={10,12,4,5};
+	sopln(x.length);//4 
+
+7. public String replace(char old , char new)
+	
+	String s = "ababab";
+	sopln(s.replace('a','b'));//bbbbb 
+
+8. public String substring(int begin)
+	return value from brgin index to end of string
+	
+	String s="abcdefg";
+	sopln(s.substring(3));//defg
+
+9. public String substring(int begin, int end)
+	return value from brgin index to end-1 index of string
+
+	String s="abcdefg";
+	sopln(s.substring(3,6));//def
+	
+10. public String indexOf(cahr ch)
+	
+	String s="durgaa";
+	sopln(s.indexOf('g'));//3
+	sopln(s.indexOf('z'));//-1 ------returns -1 if notpresent
+	sopln(s.indexOf('a'));//4 -------returns first occurence if multiple charachters
+
+11. public String lastIndexOf(char ch)
+
+	String s="durgaa";
+	sopln(s.indexOf('a'));//5
+
+12. public String toLowerCase()
+
+13. public String toUpperCase()
+
+14. public String trim()
+	removes extra spaces from string present at beginning or end
+
+	String s = "  durga  ";
+	sopln(s.trim());//durga
+	
+	>>it doesnot trims spaces in between the words
+ 
+	String se = "durga  soft";
+	sopln(s.trim().length());//11
+ 
+
+=================================================================================================================
+	IMPORTANT CONCLUSION ABOUT STRING IMMUTABILITY
+========================================================================================
+
+
+String s1= new String("durga");
+String s2=s1.toUpperCase();
+String s3= s1.toLowerCase();
+Sopln(s1==s2);//False
+sopln(s1==s3);//True
+
+	Heap	|	Scp
+		|
+s1,s3-->|durga|	|	|durga|
+    		|	
+s2-->|DURGA|	|
+
+-------------------------------
+
+
+String s1= "durga";
+String s2=s1.toString();
+String s3=s1.toUpperCase();
+String s4= s1.toLowerCase();
+Sopln(s1==s2);//True
+Sopln(s1==s3);//False
+sopln(s1==s4);//True
+
+	Heap	|	Scp
+		|
+		|s1,s2,s4---->	|durga|
+    		|	
+s3-->|DURGA|	|
+
+
+=====================================================================================
+	CREATION OF OWN IMMUTABLE CLASS
+========================================================================
+
+
+final class Test{
+	private int i;
+	Test(){
+		this i = i;
+	}
+	
+	public Test modify(int i){
+		if(this.i==i){
+			return this;	
+		}
+		else{
+			return new Test(i);
+		}
+	}
+}
+
+Test t1=new Test(10);
+Test t2=t1.modify(100);
+Test t3=t1.n=modify(10);
+
+
+t1,t3   ---->	|i=10|
+
+t2  ---->  |i=100|
+
+>>All IMMUTABLE classes are declared as final soas no one can change it.
+>>String and wrapper classes are final
+
+
+=======================================================================================
+	Final vs Immutability
+=======================================================================================
+
+ class Test{
+	psvmain(String[] args){
+		final StringBuffer sb = new StringBuffer("durga");
+		sb.append("software");
+		sopln(sb);//durgasoftware
+		
+		sb=new StringBuffer("ravi");//CE cannot reassign sb bcz its final
+	}
+}
+
+>>By declaring refference variable as final we cannot acheive immutability
+>>if want not to reassign that variable than use final but not for immutability.
+>>final talks about variable 
+>>immutability talks about object
+ 
+Which are meaningfull??
+
+1. Final Variable	Yes  
+2. Final Object		X
+3. Immutable Variable	X
+4. Immutable Object	Yes
+
+==================================================================================
+
+==================================================================================
+ 	 
+
+String ta ="A";//1
+ta=ta.concat("B");//2
+String tb="C";//3
+ta=ta.concat(tb);//4
+ta.replace("C","D");//5
+ta=ta.concat(tb);//6
+sopln(ta);
+
+
+1.
+	ta---->|A|
+
+2.
+		|A|
+
+	ta---->|AB|	
+3.
+		|A|
+	
+	ta---->|AB|
+
+	tb---->|C|
+
+4.
+		|A|
+	
+		|AB|
+
+	tb---->|C|
+	
+	ta---->|ABC|	
+5.
+		|A|
+	
+		|AB|
+
+	tb---->|C|
+	
+	ta---->|ABC|
+
+		|ABD|
+
+6.
+		|A|
+	
+		|AB|
+
+	tb---->|C|
+	
+		|ABC|
+
+		|ABD|
+	
+	ta---->|ABCC|
+
+Therefore output is
+
+ABCC
+
+
+-------------------------------------
+
+String str=" ";
+str.trim();
+
+sopln(str.equals("")+"  "+str.isEmpty());
+
+1.
+	str----->|" "|
+
+2.
+	str----->|" "|
+		
+		|""|
+Therefore output is 
+
+False False
+
+---------------------------------------
+
+String s="DURGA SOFT";
+int len=s.trim().length();
+sopln(len);//10
+
+s---->|DURGA SOFT|
+
+Output is 10
+
+------------------------------------------
+
+String s = "Hello world";
+s.trim();
+int i = s.indexOf(" ");
+sopln(i);//5
+
+s---->|Hello world|
+
+output is 5 because trim doesnot remove spaces in between.
+
+---------------------------------------------
+
+String s1="Java";
+String s2=new String("java");
+
+//condition
+{
+	sopln("equals");
+}
+else
+{
+	sopln("not equals");
+}
+
+We must add if(s1.equalsIgnoreCase(s2))//this is for content comparision
+
+	Heap	|	scp
+		|
+s1---->|Java|	|	s2---->|java|
+
+
+
+==============================================================================================
+	STRINGBUFFER
+===============================================================================================
+if content keeps on changing use StringBuffer
+
+>>all req changes performed in exisiting object only.
+
+>>whereas in String new objects are created
+
+===============================================================
+	IMPORTANT CONSTRUCTOR OF STRINGBUFFER
+==============================================================
+
+>>length and capacity both are different
+
+length-->current characters
+
+capacity ---> total how many charachters can it accomodate
+
+String s= new String("Durga");
+
+	s--->|Durga|
+	
+	length-5
+	capacity-5  // because immutable cannot add more characters
+
+StringBuffer sb = new StringBuffer("Durga");
+
+	sb--->|Durga|
+
+	length-5
+	capacity-
+
+
+----------------------------
+
+1. StringBuffer sb = new StringBuffer();
+
+		default initial capacity--->16
+	
+>> if this capacity is full then new StringBuffer object is created with bigger capacity and that 
+   copys the data into it and earlier created object is available for garbage collector.
+
+	sb---->	|<----------------------------------->| + 17th
+				16
+ 
+
+	now new object created//all this happens internally
+
+	
+		|<------------------------------------->|
+				16
+
+
+	sb----> |<------------------------------------------------->|
+				16+17th
+
+Now, capacity of new object is
+		
+	new object capacity =  (current capacity + 1)*2
+
+which means
+	new obj capacity= ( 16 + 1 ) * 2 
+			=>34
+Now if this 34 is full new object will be created with
+
+	=>( 34 + 1 ) * 2 = 70
+		
+
+
+2. StringBuffer sb = new StringBuffer(int initialCapacity);
+
+	if we want to create a SB object with a bigger capacity .
+
+	EX. 
+		StringBuffer sb = new StringBuffer(1000);
+		Sopln(sb.capacity());//1000
+
+	after 1000 characters completed the formula comes in picture which is same.
+		=(cc+1)*2
+3. StringBuffer sb = new StringBuffer(String s);
+
+	capacity=s.length()+16
+
+	ex.
+		StringBuffer sb = new StringBuffer("Durga");
+		sopln(sb.cpacity());//21
+
+==============================================================================================
+		IMP METHODS OF STRINGBUFFER
+==============================================================================================
+
+1. public int length();
+2. public int capacity();
+3. public char charAt(int index);
+	
+	SB sb = new SB("Durga");
+	sb.charAt(3);//g
+	sb.charAt(30);//Stringoutofbound
+
+4.public void setCharAt(int index,char newChar);
+
+	SB sb=new SB("Java");
+	sopln(sb.setCharAt(0,'Y'));//Yava
+5.public StringBuffer append(String s);
+		append(byte b);
+		append(int i);
+		append(long l);
+		append(float f);
+		....
+		....
+//any argument type we can use
+ 
+		SB sb = new SB();
+		sb.append("PI value is");
+		sb.append(3.14);
+		sb.append("ok bro ");
+		sb.append(true);
+		sopln(sb);//PI value is3.14ok bro true
+
+6.public StringBuffer insert(int index, String s);
+			...
+			...
+//any argument typr is used.
+
+	SB sb = new SB("asdfgh");
+	sb.insert(2,"xcv");
+	sopln(sb);//asxcvdfgh	
+
+7. public SB delete(int begin, int end);
+
+	from begin index to (end-1) index
+	
+	SB sb = new SB(""abcdefgh");
+	sb.delete(2,5);
+	sopln(sb);//abfgh
+
+8. public SB deleteCharAt(int index);
+
+	SB sb = new SB(""abcdefgh");
+	sb.deleteCharAt(3);
+	sopln(sb);//abcefgh	
+
+9. public SB reverse();
+	
+	SB sb = new SB("hello");
+	sb.reverse();
+	sopln(sb);//olleh
+		
+10. public void setLength(int length);
+
+	SB sb = new SB("Aishwary aAbhi");
+	sb.setLength(9);
+	sopln(sb);//Aishwarya
+
+11. public void ensureCapacity(int capacity);
+	based on our requirement we need to increase our capacity dynamically.
+
+	SB sb = new SB();
+	sopln(sb.capacity)//16
+	sb.ensureCapacity(1000);
+	sopln(sb.capacity)//1000
+
+12. public void trimToSize();
+	used to deallocate the extra allocated memory
+	
+	SB sb = new SB(1000);
+	sb.append("ABC");
+	sopln(sb.capacity());//1000
+	sb.trimToSize();
+	sopln(sb.capacity());//3
+
+==============================================================================================
+	NEED OF SringBuilder and DIFFERENCES WITH StringBuffer
+=================================================================================================
+>>every method in StringBuffer is synchronized.
+>>only one thread is allowed operate at StringBuffer Object.
+
+in 1.5V StringBuilder released.
+
+>>what java developers did.
+	1. Opened StringBuffer.java  file
+	2. replaced Buffer with Builder
+	3. removed Synchronized keyword
+	4. then saved file as StringBuilder
+
+ DIFFERENCE
+
+StringBuffer
+1. most of the method in StringBuffer is synchronized.
+2. only one thread is allowed operate at StringBuffer Object at a time and hence it is thread safe.
+3. Threads req to wait to operate on the StringBuffer object and hence relatively Performance is low.
+4. introduced in 1.1V
+
+StringBuilder
+1. No method in StringBuilder is synchronized.
+2. multiple thread is allowed operate at StringBuilder Object at a time and hence it is not thread safe.
+3. Threads are not req to wait to operate on the StringBuilder object and hence relatively Performance is High.
+4. introduced in 1.5V 
+
+==========================================================================================================
+	String vs StringBuffer vs StringBuilder
+==========================================================================================================
+ 
+1. String
+
+>>if content is fixed and not changing frequently.
+>>String obbject is also thread safe because it is not changing.
+>>if something is changed in current object the new object with the changes are created.
+>>all immutable objects are thread safe
+
+2. StringBuffer
+
+>>content not fixed changes frequently but thread safety is req
+
+3. StringBuilder
+
+>>content not fixed changes frequently but thread safety is not req
+
+
+=======================================================================
+		METHOD CHAINNING
+=====================================================================
+when we call a method the if return type is also same so we can call other method this concept is called method chainning.
+
+StringBuffer
+return type of append() is SB
+		delete() is SB
+		reverse() is SB
+		insert() is SB
+
+sb.m1().m2().m3()........
+
+in method chainning all method calls will be executed from left to right.
+
+StringBuilder sb = new StringBuilder();
+sb.append("durga").append("solution").reverse().insert(2,"xc");

@@ -1,0 +1,1578 @@
+===============================================================================================================
+----------------------OOPS CONCEPTS----------------------------------------
+===============================================================================================================
+
+>> A java program can contain n no. of classes 
+>> but at most there must be 1 public class 
+>> if no public class we can use any name for program 
+>> but if there is a public class the program name should be saved as the name of the public class in program.
+
+====Explicit import====
+
+import.util.ArrayList;
+
+>>Highly recomended-Readability increased
+
+
+====Implicit import====
+
+import.util.*;
+
+
+----------------------------------------------------
+======Import Not required for these classes======
+
+1.java.lang
+
+	String 
+
+>>Because by default these classes are available for every program
+
+2.default package
+
+	Current working directory
+
+>>any thing present in cwd dosent need import statement
+
+====================================================
+
+java-
+  |->util
+	|->regex
+		|->Pattern
+
+then we need to import
+
+>>import java.util.regex.*;
+
+because sub package classes are not included in java.util*
+
+=====================================================
+
+>>only 1 package statement can be used in java file.
+>>order is important  
+	1. package statement(at most one)
+	2. import statement(any number)
+	3. classes/interface/enum(any number)
+
+======================================================
+
+
+=======Class Level Modifiers==============
+
+1.public
+	
+	public class A{}
+	//this can be accessed from any where.
+	
+	class A(){}
+	//default class which can be accessed only within the the package.
+
+2.abstract
+	
+	abstract class A{}
+	//Objects cannot be created
+
+3.final
+
+	final class A{}
+	//Child of class A cannot be created. 
+
+
+>>====Top level classes Modifiers ========
+
+1.public
+2.<default>
+3.abstract
+4.final
+5.strictfp
+
+>>======INNER CLASSES MODIFIERS(Class inside class modifiers that are applicable)==========
+
+TOP LEVEL CLASS MODIFIERS
+	+
+private,protected,static
+
+>>we can access only public class of package1 outside of package1
+    
+===========================================================================================
+
+
+===========================================================
+
+------------------------ABSTRACT---------------------------
+-> we can use abstract for:
+	1. methods
+	2. class
+
+>>Method which has only declaration but not implementation is considered as Abstract methods
+
+	Ex.	abstract class vehicle{
+			public abstract int getNumOfWheels();//abstract method
+		}
+
+NOTE 1: Abstract method ends with ";" not by "{}".
+NOTE 2: If a class contains one Abstract method then the class should be declared as Abstract.
+
+==============================================================
+''''''''''''''''''''''ABSTRACT CLASS''''''''''''''''''''''''''
+==============================================================
+
+-> Class which is partially implemented(or contains Abstract methods or dummy implementaion).
+-> We cannot create object of ABSTRACT CLASS.(because it is partially implemented)
+
+	-----ref to above example-------------
+	EX. vehicle V1=new Vehicle();
+		V1.getNumOfWheels();
+		>>> IT will give error as class vehicle is containing unimplemented method.
+
+NOTE 1: An Abstract class can contain 0 abstract method.
+>>it is not compulsary to have a abstract method in abstract class.
+>>may be the class is partially implimented or dummy implementation is used we can make that class as abstract
+
+>>>>>>>>>>>>>>>>=EXAMPLE OF ABSTRACT CLASS WITHOUT ABSTRACT METHOD=<<<<<<<<<
+
+>>HttpServlet class dose'nt contain any abstract method but is still an ABSTRACT CLASS. 
+>>Adapter class
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+=================WHEN ABSTRACT CLASS IS EXTENDED IN OTHER CLASS============
+
+->Child class is responsible for providing the implementation of 
+  all the abstract methods present in the abstract class.
+
+	Ex.
+		abstract class Test{
+			public abstract void m1();
+			public abstract void m2();
+		}
+		class SubText extends Test{
+			public void m1(){}
+			public void m2(){}
+		}
+>> if we dont provide implemention of all the abstract method in child class then:
+		1. make child class as abstract.
+			//so now next child class has to provide the implementation.
+
+NOTE: what if i dont provide abstract method in class?
+	now the child class may provide the implementation of that method or not.
+	but if it is abstract then it is compulsary to provide implementation. 
+
+==================================================================================
+=========================MEMBER MODIFIERS====================================
+
+----------------PUBLIC---------------------------------------------
+
+-> If member of a class is public then we can access it from any where within package or outside package.
+-> But make sure that the class is also public.otherwise there is no use of public member.
+
+//saved as A.java
+
+package pack1;
+class A{
+	public void m(){}
+}
+
+package pack2;
+import pack1.A;
+class B{
+	psvm(String [] args){
+		A a=new A();//compile time error As class A is not public
+		a.m();	
+	}
+}
+
+>>for making the above code to work we must declare Class A as public.
+
+---------------------DEFAULT------------------------------------
+
+->Access only within the package. 
+->even if the class is public but members are <default> we cant access it outside package.
+
+EX.
+
+package pack1;
+public class A{
+	void m(){}
+}
+
+package pack2;
+import pack1.A;
+class B{
+	psvm(String [] args){
+		A a=new A();
+		a.m();//cannot access default member	
+	}
+}
+
+==============================================================================
+-------------IMPORTANT----------------------------------------------------
+1. PUBLIC (members) -> GLOBAL LEVEL
+2. <DEFAULT> (members) -> PACKAGE LEVEL
+3. PRIVATE (members) -> CLASS LEVEL
+
+RECOMENDED MODIFIERS FOR:
+1. Variables:- Private
+2. Methods :- Public
+--------------------------------------------------------------------------
+===============================================================================
+
+--------------PROTECTED-------------------------------------------------------
+
+-> Protected = <default>+kids
+
+>>that means a protected class members can be accessed only in the current package
+  and in the child classes.
+
+package pack1;
+
+class A{
+	protected void m1(){
+		sopln("A class Protected method");
+	}
+}
+
+class B extends A{
+	psvm(String[] args){
+		A a=new A();// parent refference parent object
+		a.m1();
+
+		B b=new B();// child refference child object
+		b.m1();
+
+		A a=new B();// parent refference child object
+		a.m1();
+	}
+}
+
+=>>Here in above program all the options are fine they all will work.
+
+*******************************IMPORTANT************************************************************************************
+NOTE:- Protected members outside package can be only used in the child classes,
+       under we should use that child class reference only to access protected 
+       members from outside package.
+*****************************************************************************************************
+
+package pack2;
+import pack1.A;
+
+class B extends A{
+	psvm(String[] args){
+
+		// THIS WILL NOT WORK
+		A a=new A();// parent refference parent object
+		a.m1();//As we are using parent refference
+
+
+		B b=new B();// child refference child object
+		b.m1();//***WORK FINE***
+		
+
+		// THIS WILL NOT WORK
+		A a=new B();// parent refference child object
+		a.m1();//As we are using parent refference
+	}
+}
+
+-------------SUMMARY OF PUBLIC,PROTECTED,DEFAULT,PRIVATE---------------------------
+
+
+***********************************************************************
+|---VISIBILITY-------|--PUBLIC--|--PROTECTED--|--DEFAULT--|--PRIVATE--|
+***********************************************************************
+| Within same class  |   YES    |     YES     |    YES    |   YES     |
+***********************************************************************
+| From child class   |   YES    |     YES     |    YES    |    NO     |
+| of same package    |          |             |           |           |
+***********************************************************************
+|From non-child class|   YES    |     YES     |    YES    |    NO     |
+|of same package     |          |             |           |           |
+***********************************************************************
+|From child class of |   YES    |     YES     |    NO     |    NO     |   
+|outside package     |          |[with child  |           |           |
+|                    |          |as reference]|           |           |
+***********************************************************************
+|From non-child class|   YES    |     NO      |    NO     |    NO     |
+|of outside pacakge  |          |             |           |           |
+***********************************************************************
+
+
+********MOST RISTRICTED MODIFIER************
+
+   PRIVATE < DEFAULT < PROTECTED < PUBLIC
+
+********************************************
+
+===============================================================================================================
+
+++++++++++++++++++++++++++++++++++++   INTERFACE   ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DEF. 1.>>Any service requirement specification.
+DEF. 2.>>Any contract between client and service provider.
+DEF. 3.>>100% pure abstract class.(But from v1.8 default and protected allowed, 1.9v private allowed ).
+	//so we can no longer consider this as def. of Interface
+
+
+->only the defination of method is written in interface.(implementation not provided)
+->every method present inside interface is PUBLIC and ABSTRACT.(by default)
+  
+
+EX.
+
+interface Interf{
+	public void m1();
+	public void m2();
+}
+
+ class ServiceProvider implements Interf{
+	void m1(){}//Complite time ERROR
+	//it should be written as "public void m1(){}"
+}
+
+
+->while providing implementation of methods of interface we cant reduce scope of access modifiers.
+  (implementation of interface methods should always be PUBLIC)
+
+EX.
+
+interface Interf{
+	public void m1();
+	public void m2();
+}
+
+ class ServiceProvider implements Interf{
+	public void m1(){}
+	
+}
+//ERROR m2() not implemented.
+
+
+->it is compulsary to provide implementation of each and every method present in interface.
+
+EX.
+
+interface Interf{
+	public void m1();
+	public void m2();
+}
+
+ class ServiceProvider implements Interf{
+	public void m1(){}
+	public void m2(){}
+	
+}
+
+//THIS IS CORRECT(above ex.)
+
+EX.
+
+interface Interf{
+	public void m1();
+	public void m2();
+}
+
+abstract class ServiceProvider implements Interf{
+	public void m1(){}
+	
+	
+}
+class SubServiceProvider extends ServiceProvider{
+	public void m2(){}
+}
+
+->if we can't provide the implementation of all methods then we must declare the class as ABSTRACT.
+  and then the child class of this class has to provide implementation.
+
+=========================================================================================================
+
+
+
+=========================================================================================================
+------------------DATA HIDING---------------------------------------------------------------------
+=========================================================================================================
+
+
+->it is aconcept of hiding important data.
+->or making sure to access particular data you have to go through some validations.
+ if you are valid person we show u the data else not.
+Ex. Bank account balance can be only accessed by the account holder after going through certain validations.(acc. no. password otp)
+
+
+
+class Account{
+	private double balance;
+	
+	public double getBalance(){
+
+	-/validations/-
+	
+	return balance;
+	}
+}
+
+>>ADVANTAGE :- SECURITY
+
+===============================================================================================
+-------------------------------ABSTRACTION--------------------------------------------------
+===============================================================================================
+
+>>Hiding internal implementation just highlight setup services we offer.
+
+
+EX. 
+->In atm they highlight the GUI as what services they provide but never tells
+about the process that is executing in backend (they dont tell the sql query used,which func called, ip address of server, location of server)
+
+>>BY using GUI screens Interface concept  we can implement ABSTRACTION
+
+
+ADVANTAGES:
+	1.SECURITY
+	2.ENHANCEMENT EASY(ww can change the backend lang. completly)
+	3.MAINTAINABILITY / MODULARITY
+
+========================================================================================================
+------------------------------ENCAPSULATION-----------------------------------------------
+=================================================================================================
+>>The process of grouping the data members and corresponding methods into single unit.
+>>EX. CLASS
+
+ENCAPSULATION = DATA HIDING + ABSTRACTION
+
+Hiding data behind methods
+
+ADVANTAGES:
+	1.SECURITY
+	2.ENHANCEMENT EASY(ww can change the backend lang. completly)
+	3.MAINTAINABILITY / MODULARITY
+DISADVANTAGES:
+	1.Increases length of code
+	2.Time consuming (performance down).
+
+
+-----------------------TIGHTLY ENCAPSULATED CLASS-------------------------------
+
+>>every variable is private then said to be tightly encapsulated class.
+
+
+->if parent class not TIGHTLY ENCAPSULATED then child class will not be Tightly Encapsulated.
+
+
+=========================================================================================================
+---------------------------------INHERITANCE------------------------------------------------------
+=========================================================================================================
+
+1. IS a Relationship
+2. Code Resusability
+3. extends keyword
+
+
+->If we extend a class then all the methods are inherited into the child class.
+->On parent reference we cannot call the child specific class methods and variables.
+->On child class reference we can call parent specific class methods and variables.
+->On child refference we cannot hold the parent class object.
+class P{
+	void m1(){
+		Spoln("PARENT");
+	}
+}
+
+class Child extends P{
+	void m2{
+		Spoln("CHILD");
+	}
+}
+class Test{
+	P p=new P();
+	p.m1();
+	p.m2();//ERROR cannot call child method by parent reference.
+--------------------------------------------------------------------------
+	Child c=new Child();
+	c.m1();//this works fine
+	c.m2();//this works fine
+---------------------------------------------------------------------------
+	P p=new Child();
+	p.m1();//this works fine
+	p.m2();//ERROR - parent reference cannot be used to call child methods.
+-------------------------------------------------------------------------------
+	Child c= new P();//ERROR- We cannot hold Parent class object on Child refference.
+}
+
+
+==============ADVANTAGES OG INHERITANCE==================================================
+
+1. Reusability.
+2. Reduce development time.
+
+JAVA has 4300+ classes
+
+->Object is the root class in java
+->java is based on inheritance.
+->having more that 4300+ classes
+
+==================TYPES OF INHERITANCE=============================================
+
+1. Single level
+
+	Class A (parent)
+	   ^
+	   |
+	   |
+	Class B (child)
+
+2. Multiple  (Not supported by classes in java)
+	
+	Class A		Class B
+	   ^               ^
+	    \             /
+	     \           /
+ 	 	Class C
+		(child)
+3. Multi level
+
+	Class A
+	   ^
+	   |
+	Class B
+	   ^
+	   |
+	Class C
+
+4. Hierarchical
+
+			Class A
+			^  ^  ^
+		       /   |   \
+		      /    |    \
+		Class B Class C Class D
+
+5. Hybrid (Not supported by classes in java because of Multiple Inheritance)
+
+ 
+			A
+			^
+			|
+			B
+			^
+			|
+			C
+		       ^ ^
+		      /   \
+		     D     E
+		     ^     ^
+		      \   /
+			F
+====================================================================================
+--->>	Why Multiple Inheritance Not supported by classes in java?
+
+
+	m1(){}	P1		P2  m1(){}
+		^		^
+		 \	       /
+		  \	      /
+		   -----C-----
+
+Class C extends P1,P2{//Java will not allow to extend more than one class.--ERROR
+	C c=new C();
+	c.m1();	
+}
+
+//ERROR-- This will be confusing for compiler to call m1() method from which class.
+>>Ambiquity problem for compiler to choose between the two methods 
+
+
+-------Multiple Inheritance in Interface---------------------
+
+
+	m1();	PI1		PI2  m1();
+		^		^
+		 \	       /
+		  \	      /
+		    ----CI----
+			^
+			|
+		   Class Test m1(){}
+
+>>Now , here only declaration of m1()method is there in Interface PI1 and PI2.
+>>Then these both are extended in Interface CI.
+>>AND Interface CI is implemented in Class Test.
+>>Now, Its responsibility of Class Test to provide m1()method implementation.
+
+
+SO, PI1 p1=new PI1();
+	p1.m1();//this will always call the implemented method in class Test.
+
+----------------------------------------------------------------------------------
+>>> In python Multiple Inheritance is supported by classes. How?
+
+-> In python the object calls the method of the class which is extended first.and if that method
+is not present in first class then it searches for that in second class.
+
+
+Class A:
+	def m(self):	
+		print("From A")
+
+Class B:
+	def m(self):
+		print("From B")
+
+Class C(A,B):
+	pass
+
+c=C()
+c.m()
+
+
+>>	O/p	-->	 From A
+
+------------------------------------------------------------------------------------
+>>Object class is the root class every class extend object class.
+
+-> So, when Class A extends Class B, then Class A also extend Object class as 
+   it is the root class.
+
+-> So now multiple inheritance is possible.
+
+
+	Object		Class B
+	   ^               ^
+	    \             /
+	     \           /
+ 	 	Class A
+		(child)
+
+-> But actually thats not the case.
+
+>> A class only extends Object class when it is not extending any other class.
+
+-> But here Class A extends Class B
+
+     Class B
+	^
+	|
+     Class A
+
+
+-> So class B is the one which is not extending any class.
+   therefore
+
+	Object
+	  ^
+	  |
+	Class B
+
+>>So, we can say that To be exact its a Multilevel inheritance.
+
+
+	Object
+	  ^
+	  |
+	Class B
+	  ^
+	  |
+	Class A
+
+=========================================================================================
+---------------CYCLIC INHERITANCE---------------------
+
+->When Class A extends itself
+
+		or
+
+->Class A extends B AND Class B extends A
+
+>>This type of inheritance is not supported in any language.
+	
+	(Why will we want to inherit the properties of class A 
+	to class A again when they are allready present in it) 
+
+==============================================================================================
+--------------------METHOD SIGNATURE------------------------------------------------
+
+-> method name and arguments type in the same order is called as method signature.
+
+
+	public void m1(int a,String s){}
+
+
+	m1(int,String)//Method Signature.
+
+-> Two method with same method signature are not allowed in the class.
+
+	public void m1(int a){}
+
+	public int m1(int a){
+	return 10;
+	}	
+	//ERROR- not allowed as m1(int) signature allready exists
+
+
+============================================================================================
+-------------------------METHOD OVERLOADING-------------------------------------------
+=======================================================================================
+
+>> method is said to be over loaded if names of two methods are same but different argument types.
+
+
+m1(int a){}
+m1(String s){}
+
+-----------IN C Lang.----------
+overloading concept is not defined.
+
+abs(int)
+labs(lang)
+fabs(float)
+
+->diff func for diff data type.
+
+>>So, programming complexity increased.
+
+Class Test{
+	public void m1(){
+		Sopln("no arg");	
+	}
+	public void m1(int i){
+		Sopln("int-arg");	
+	}
+	public void m1(Double s){
+		Sopln("double-arg");	
+	}
+
+	public static void main(String[] args){
+		Test t=new Test();//refference type Test
+		t.m1();
+		t.m1(10);
+		t.m1(10.5);
+	}
+}
+
+>>O/P
+->no arg
+->int-arg
+->double-arg
+
+	In overloading method resolution always takes care by compiler.
+ 	based on refference type not based on object type. (case 6 of overloading) 
+
+>>Thats why it is known as COMPILE TIME POLYMORPHISM or STATIC POLYMORPHISM or EARLY BINDING.
+
+JVM is not responsible for this but compiler is.
+
+=================================================================================================
+
+---------CASE 1 of OVERLOADING----------------------
+=====================================================
+
+class Test{
+	
+	public void m1(int i){
+		Sopln("int-arg");	
+	}
+	public void m1(Float f){
+		Sopln("Float-arg");	
+	}
+
+	public static void main(String[] args){
+		Test t=new Test();
+		
+		t.m1(10);
+		t.m1(10.5f);
+		t.m1('a');//automatic promotion of char to int type
+		t.m1(10l);//automatic promotion of long to float type
+		t.m1(10.5);//Compile time -ERROR no func. of double.
+	}
+}
+
+
+So, the output will be:
+	>>int-arg
+	>>Float-arg
+	>>int-arg
+	>>float-arg
+
+
+-----AUTOMATIC PROMOTION CHART---------
+
+byte ---> short
+		\
+		 \
+		  |--> int ---> long ---> float ---> double
+		 /
+		/
+	   char
+
+
+---IMPORTANT---
+	
+-->>	So the compiler will promote the current type to the next type as in chart and if method
+	is available for that type then it will compile sucessfully and if not the it will 
+	promote to next type and so on.
+	
+--->>	But if in end there is no method for the lastpromotion also then it will give compile time ERROR.
+
+=======================================================================================
+
+------------CASE 2 of OVERLOADING--------------------
+======================================================
+
+class Test{
+	
+	public void m1(Object o){
+		Sopln("object version");	
+	}
+	public void m1(String s){
+		Sopln("String version");	
+	}
+
+	public static void main(String[] args){
+		Test t=new Test();
+		
+		t.m1(new Object()); //o/p-> Object version
+		t.m1("Nishant"); // o/p-> String version
+		t.m1(null);// o/p-> String version
+
+	}
+}
+
+
+------IMPORTANT-------
+
+>>null is for both Object and String.
+
+--> But in above program it calls String version argument method because
+   String is the child class of object.
+
+		Object
+		  ^
+		  |
+		  |
+		String
+
+   So, if a work can be done by the child so why to go for parent class.
+
+--> Child class argument will get more priority than parent class argument.
+
+
+--> Also, if the String version argument method would have been not there
+   then it would have called the Object version argument method 
+
+============================================================================
+
+---------------CASE 3 of OVERLOADING------------------------
+=========================================================================
+
+class Test{
+	
+	public void m1(StringBuffer sb){
+		Sopln("StringBuffer version");	
+	}
+	public void m1(String s){
+		Sopln("String version");	
+	}
+
+	public static void main(String[] args){
+		Test t=new Test();
+		
+		t.m1(new StringBuffer("Nishant")); //o/p-> StringBuffer version
+		t.m1("Nishant"); // o/p-> String version
+		t.m1(null);// Compile time ERROR ambiguous
+
+	}
+}
+
+Now, in this case both the classes String and StringBuffer are independent.
+
+		     Object
+		    ^      ^
+		   /        \
+		  /          \
+		String       StringBuffer
+
+So , the compile will get confuse for null value. To choose between the two.
+Therefore it will give Compile time ERROR as Ambiguous.
+
+
+=============================================================================
+
+---------------CASE 4 of OVERLOADING------------------------
+=========================================================================
+	_______________
+>>	var-arg method.
+	_______________
+	
+public void m1(int... i){
+		Sopln("var-arg method");	
+	}
+
+t.m1();//var-arg method
+t.m1(10);//var-arg method
+t.m1(10,20);//var-arg method
+t.m1(10,20,30,40);//var-arg method
+
+
+in this method anny no of int values or even m1() will call this function only.
+
+
+class Test{
+	
+	public void m1(int i){
+		Sopln("General method");	
+	}
+	public void m1(int... i){
+		Sopln("var-arg method");	
+	}
+
+	public static void main(String[] args){
+		Test t=new Test();
+		
+		t.m1();//op-> var-arg method
+		t.m1(10,20); //op-> var-arg method
+		t.m1(10);//op-> General method
+
+	}
+}
+
+So, here in case 3 when we call t.m1(10);
+
+The fight is between int and int...
+
+as int is in java from the very beginning and var-arg(int...) is a updation made in java 1.5.
+So, the old version method will be given priority over latest updated things.
+
+var-arg method always get least priority if no method is matched then only it will be called.
+
+=============================================================================
+
+---------------CASE 5 of OVERLOADING------------------------
+=========================================================================
+
+class Test{
+	
+	public void m1(int i, float f){
+		Sopln("int-float method");	
+	}
+	public void m1(float f,int i){
+		Sopln("float-int method");	
+	}
+
+	public static void main(String[] args){
+		Test t=new Test();
+		
+		t.m1(10,5.6f);//op-> int-float method
+		t.m1(4.5f,1); //op-> float-int method
+		t.m1(10,10);//op-> CE: reference to m1 is ambiguous
+		t.m1(10.5f,10.5f);//CE no such method 
+	}
+}
+
+in case t.m1(10,10); 
+the int match int and int can be promoted to float.
+the int can be promoted to float and float float match.
+
+So, there is ambiguity between the both.
+therefore compile time error.
+
+in case t.m1(10.5f,10.5f);
+no method match therefore invalid
+
+=============================================================================
+
+---------------CASE 6 of OVERLOADING------------------------------------
+=========================================================================
+
+class Animal{}
+class Monkey extends Animal{}
+class Test{
+	public void m1(Animal a){
+		Sopln("Animal version");
+	}
+	public void m1(Monkey m){
+		Sopln("Monkey version");
+	}
+
+	psvm(String [] args){
+	
+	Test t= new Test();
+	Animal a=new Animal();
+	t.m1(a);//Animal Version
+
+	Monkey m = new Monkey();
+	t.m1(m);//Monkey version
+	
+	Animal a1=new Monkey();//Animal reference which will be used by compiler to resolve the method to call.
+	t.m1(a1);//Animal version
+	}
+}
+
+in this case t.m1(a1);
+The op is Animal version because
+the object a1 is of Animal reference.
+
+
+==================================================================================================================
+======================================================================================================================
+
+				METHOD_OVERIDDING
+
+-----------------------------------------------------------------------------------------
+
+>>when child class is not happy with the parent class method implementation then he can redefine  the method .
+	Which is called method overridding
+
+
+class P{
+	public void property(){
+		Sopln("Cash+gold+land");
+	}
+	public void marry(){
+		Sopln("kanaamurti/sarita");
+	}
+}
+
+class C extends P{
+	public void marry(){
+		Sopln("Dani");
+	}
+	
+
+}
+
+class Test{
+	psvmain(String[] args){
+	
+		P p=new P();
+		p.marry();-> Parent method
+
+		C c=new C();
+		c.marry();-> Child method
+
+		P a=new C();
+		a.marry();->Child method
+	}
+}
+
+
+>>In case: P a=new C();
+	   a.marry();
+
+->based on the refference compiler will check wether marry() is available in P class or not.
+  thats it. for compiler job done
+-> Now, At RUN_TIME JVM will check the run time object.
+   then it will check in this Child class is marry() overriding or not.
+	If yes, JVM will give chance to method in child class always.
+
+>>In OVERRIDING method resolution is done by JVM based on run time object.
+
+Therefore OVERRIDING aka:
+	1. RUNTIME_POLYMORPHISM.
+	2. DYNAMIC_POLYMORPHISM
+	3. LATE_BINDING
+
+==============================================================================================================
+
+			Method-Overriding Rules - 1
+-------------------------------------------------------------------------------------------------------------
+
+1.Method Signatures must be same.
+2.Return type must be same.(upto 1.4V / from 1.5V Co-vaiant Return type allowed) 
+	Co-variant means we can use its child types as return type.
+
+	Ex.
+		class P{
+			public Object m1(){
+				return null;
+			}	
+		}
+
+		class C extends P{
+
+			public String m1(){
+				return null;
+			}
+		}
+
+==============================================================================================================
+
+			Method-Overriding Rules - 2
+-------------------------------------------------------------------------------------------------------------
+
+>>Overriding concept not applicable for private methods.
+  because these are not visible to child classes.
+
+class P{
+	private void m1(){
+
+	}
+}
+class C extends P{
+
+	private void m1(){
+	}
+}
+
+
+here in class C m1 methhod is independent of class P method. and it will work fine.
+
+it is not the concept of overridding here . both are independent.
+
+class Test{
+	public static void main(String [] args){
+		P p=new C();
+		p.m1();//error- we cannot call private method outside the class.
+		
+	}
+}
+
+
+--------------------final keyword---------------------------
+>> if a method is final we cannot override it.
+
+class P{
+	public final void m1(){
+
+	}
+}
+
+class C extends P {
+	public void m1(){//ERROR - cannot override final method.
+	}
+
+}
+
+>>also if we try to add final to the child method still error exists
+because we cannot override final method.
+
+
+-----------------rules for overridding------------------
+
+
+Parent method	final		non-final	abstract	non-abstract 	synchronised 		native		strictfp
+		  |		  |		   |		   |		    |			  |		    |
+		X |	 	  |		   |		   |		    |			  |     	    |
+		  |   	 	  |   		   |		   |		    |			  |		    |
+		  |		  |		   |		   |		    |			  | 		    |
+child method	non-final	final		non-abstract	abstract	non-synchronised	non-native 	non-strictfp
+
+
+==============================================================================================================
+
+			Method-Overriding Rules - 3
+-------------------------------------------------------------------------------------------------------------
+
+>>during overriding we cannot reduce the scope of the access modifiers.
+but we can increase the scope.
+
+class P{
+	public void m1(){
+
+	}
+}
+
+class C extends P {
+	protected void m1(){//ERROR-cannot reduce scope of access modifiers
+	}
+
+}
+
+
+>>>             private < default < protected < public
+
+
+Parent method	Public		protected	default		private
+		  |		  |		   |		   |		
+		  |	 	  |		   |		   |		
+	   	  |   	 	  |   		   |		   |		    
+		  |		  |		   |		   |		    
+child method	public		protected/	default/	not applicable overriding concept
+				public		protected/
+						public
+
+==============================================================================================================
+
+			Method-Overriding Rules - 4
+-------------------------------------------------------------------------------------------------------------
+
+Checked exception and unchecked exception.
+
+
+			 -----------Throwable---------------
+			/				    \
+		       /				     \
+	 ---------Exception--------			    Error
+	/	     |	   \	   \			   /	
+       /	     |	    \	    \		          /
+      /		     |	     \	     \		         /
+     RE		IoException   IE     SE		  VM Error     .......
+   |		|				     /\
+   |-AE		|-FNFE				    /  \	
+   |-NPE	|-EOF Exception   		   /    \	
+   |-CCE	| .		Out of memory Error      StackOverFlow Error
+   | .		| .
+   | .
+   | .
+
+
+
+UC-> RE and under that / Error and under that
+
+rest all are Checked.
+
+
+Rule in overriding.
+>>if child class method throws any checked exception parent class method should also throw that same exception or its parent exceptiion.
+
+>>no such rule for unchecked exception.
+
+
+Ex.
+1.
+	p: public void m() throws Exception
+	c: public void m(){}
+2.
+	p: public void m()			//X
+	c: public void m() throws Exception
+3.
+	p: public void m() throws Exception
+	c: public void m() throws IOException
+4.
+	p: public void m() throws IOException	//X
+	c: public void m() throws Exception
+5.
+	p: public void m() throws IOException
+	c: public void m() throws EOFException,FNFE
+6.
+	p: public void m() throws IOException
+	c: public void m() throws EOFException,IE	//X
+7.
+	p: public void m() throws IOException
+	c: public void m() throws EOFException,NPE
+8.
+	p: public void m() throws IOException
+	c: public void m()throws AE ,NPE
+
+======================================================================================================================================================
+
+-----------------------------------METHOD HIDING--------------------------------------------------------------------
+=========================================================================================================================
+We cannot override static method.
+
+Static to non-static methods or non-static to static methods not possible.
+
+
+>>but static to static this is not overridding it is method hidding.
+
+
+class P{
+	public static void m1(){
+		sopln("Parent");
+	}
+}
+
+class C extends P {
+	public static void m1(){
+		sopln("child");
+	}
+
+}
+
+class Test {
+	psvm(String [] args){
+		P p = new P();
+		p.m1();		//parent
+
+		C c = new C();
+		c.m1 ();	//child
+
+		P p1 = new C();
+		p1.m1();	//parent
+	}
+}
+
+>>here the method resolution is done by compiler based on refference type because it is method hidding not overriding.
+
+======================================================================================================================================================
+
+-----------------------------------OVERRIDDING WRT VAR ARG METHODS--------------------------------------------------------------------
+=========================================================================================================================
+
+>>we cannot override var-arg method with normal method. to override we must override it only by var-arg method
+
+
+class P{
+	public void m1(int... i){  //var - arg method 
+		sopln("Parent");
+	}
+}
+
+class C extends P {
+	public void m1(int i){  //normal method 
+		sopln("child");
+	}
+
+}
+
+class Test {
+	psvm(String [] args){
+		P p = new P();
+		p.m1(10);	//parent
+
+		C c = new C();
+		c.m1 (10);	//child
+
+		P p1 = new C();
+		p1.m1(10);	//X-Child-X Parent(correct)
+	}
+}
+
+
+>> as we can see var-arg method(int... ) is being overridden  by int method .
+>> but really its not overridding it is overrloadding.(same name diff arguments).
+
+>> therefore method resolution will be done by compiler based on refference type as it is overloadding. 
+
+
+
+class P{
+	public void m1(int... i){  //var - arg method 
+		sopln("Parent");
+	}
+}
+
+class C extends P {
+	public void m1(int... i){  //var - arg method 
+		sopln("child");
+	}
+
+}
+
+class Test {
+	psvm(String [] args){
+		P p = new P();
+		p.m1(10);	//parent
+
+		C c = new C();
+		c.m1 (10);	//child
+
+		P p1 = new C();
+		p1.m1(10);	//Child
+	}
+}
+
+>>> now it is overridding 
+
+======================================================================================================================================================
+
+-----------------------------------OVERRIDDING WRT VARIABLES--------------------------------------------------------------------
+=========================================================================================================================
+
+>>overriding is only applicable for methods. not for variables.
+
+>>so variable resolution processes is done by compiler based on the refference type.
+
+>>it is same for all instance-instance, static-nonStatic, nonstatic-static, static-static.
+
+
+class P{
+	String s ="Parent";
+	}
+}
+
+class C extends P {
+	String s ="Child";
+	}
+
+}
+
+class Test {
+	psvm(String [] args){
+		P p = new P();
+		Sopln(p.s);	//parent
+
+		C c = new C();
+		Sopln(c.s);	//child
+
+		P p1 = new C();
+		Sopln(p1.s);	//Parent
+	}
+}
+
+--------------------------------------------------------
+>>This process is called SHADOWING or Variables Hidding.
+--------------------------------------------------------
+
+P:instance	P:Static	P:non staic	P:static
+C:instance	C:non-static	C:static	C:static
+   P			P	    P		   P
+   C			C	    C		   C
+   P			P	    P	           P
+
+======================================================================================================================================================
+
+-----------------------------------OVERRIDDING AND OVERRIDING--------------------------------------------------------------------
+=========================================================================================================================
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Property			Overloading			Overriding
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Method names			Same				Same
+
+Arguments Types			Different(atleast order)	Same(including order)
+
+Private/final/static methods	Can be OL			NO OR
+
+Return type			No restriction			Same(1.4v) co-variant return types allowed after(1.5v)
+
+throw clause			No restriction			if child class throws any checked exception compulsary paresnt must throw same checked exception or its parent exception.
+
+method resolution		Compiler based on reff.		JVM based on runtime object		
+
+other names			Compile time polymorphism/	Runtime Polymorphism/Dynamic polymorphism/late binding
+				Static Binding/Early Binding
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+======================================================================================================================================================
+
+-----------------------------------POLYMORPHISM--------------------------------------------------------------------
+=========================================================================================================================
+
+
+Poly-->many
+morphs-->forms
+
+		ME:-->Home: class,college,book...
+		|-->Outside: movie, Brand...
+		|-->Outside of native: Wings....
+
+
+				POLYMORPHISM
+				     /\
+Static/Compile Time/Early Binding		Dynamic/Runtime/Late Binding
+     		/\					    |
+Overloading		Method Hiding			Overriding 
+
+
+======================================================================================================================================================
+
+-----------------------------------3-PILLARS OF OOPs--------------------------------------------------------------------
+=========================================================================================================================
+		
+
+
+				  ENCAPSULATION
+					|
+					| Security
+		Flexibility		|
+POLYMORPHISM---------------------------OOPs--------------------INHERITANCE
+						Reusability
+			
+
+======================================================================================================================================================
+
+-----------------------------------3MANTRAS OF OBJECT TYPECASTING--------------------------------------------------------------------
+=========================================================================================================================
+
+
+Object o = new String("Nishant");
+StringBuffer sb=(StringBuffer)o ;
+
+
+	A b = (C) d;
+
+>> now for object type casting there are 3 step checking.
+>> 2 are performed by compiler at compile time and other by jvm at run time.
+
+1. Compile time checking 1
+	is typecasting valid?
+	C and d must be having some relation.(otherwise it cannot be type casted)
+	(child to parent , parent to child or same type)
+
+2. Compile time checking 2
+	is assignment val id?
+	C must be same as A or its child type.
+3. Runtime checking 3(JVM)
+	run time object type of d must be same as C or child type of C.
+	otherwise RE:CCE
+ 
+EXAMPLE.
+
+	Object o = new String("Nishant");
+	StringBuffer sb=(StringBuffer)o ; 
+
+>>here run time object is of String type which is not same as StringBuffer neither its child so we will get the error.
+
+>>>RE:CCS
+EX.
+	Object o = new String("Nishant");
+	String s=(String)o ;
+op-> Accepted.
+ 
+======================================================================================================================================================
+
+-----------------------------------OBJECT TYPECASTING CAse Study--------------------------------------------------------------------
+=========================================================================================================================
+
+
+			Object
+			  /\
+			 /  \
+			/    \
+		    Base1    Base2
+		    /\		/\
+		   /  \        /  \
+	       Der1   Der2   Der3  Der4
+
+
+Base2 b=new Der4();
+
+
+Der4 d=(Der4) b;	//Pass
+Base1 b1=(Base1) b;	//CE
+Base2 b2 (Base2) b;	//Pass
+Object o=(Der3) b;	//RE - CCE
+Base 2 b3=(Base1) b;	//CE 
+
+======================================================================================================================================================
+
+-----------------------------------Internal Things of OBJECT TYPECASTING--------------------------------------------------------------------
+=========================================================================================================================
+
+
+		A
+		^
+		|
+		|
+		B
+		^
+		|
+		|
+		C
+
+
+C c=new C();
+
+(B)C; //B type refference.
+      //C type runtime object.
+
+(A)((B)C);//A type refference.
+	  //C type run time object.
+
+
+-------------------------------------------------------------------------
+
+String s =new String("Durga");
+Object o =(Object) s;
+
+	    		   _____________
+String s ---------------> |Durga        |
+Object o ---------------> |_____________|				
+				
+
+>>We are not creating another object we are just changing the refference type of the object by type casting.
+
+to check this if we write
+
+System.out.println(s == o);//True-- this means both the object are same.

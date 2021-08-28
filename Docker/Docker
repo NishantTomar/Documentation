@@ -1,0 +1,149 @@
+1.Installation of docker
+2.Post installation task
+
+Create instance on AWS
+-----------------------
+  Click on Launch instance
+  select the required machine
+  In Configure security group add the ssh http and custom tcp
+  download the pem key
+  and then get the public ip and launch the instance in putty when instance is running
+  
+  
+Now in aws machine (amazon Linux)
+---------------------------------
+  Update the machine by running these cmds
+  >>sudo su
+  >>yum update -y
+  
+  Install docker
+  --------------
+  >>yum install docker =y
+  
+  Post installation task
+  -----------------------
+  check wether docker service is running or not
+  >>systemctl status docker
+      this will show the status of docker (dead)
+  now start the service
+  >>systemctl start docker
+      active
+  >>systemctl status docker
+      running
+      
+  Now to install first docker image
+ ---------------------------------
+    >>docker run hello-world
+    this will rin the hello world image
+   
+docker pull hello-world - pull
+docker run hello-world - pull + run
+ 
+  Docker container commands
+  ------------------------
+
+  [root@ip-172-31-15-114 ec2-user]# docker container --help
+
+  Usage:  docker container COMMAND
+
+  Manage containers
+
+  Commands:
+    attach      Attach local standard input, output, and error streams to a running container
+    commit      Create a new image from a container's changes
+    cp          Copy files/folders between a container and the local filesystem
+    create      Create a new container
+    diff        Inspect changes to files or directories on a container's filesystem
+    exec        Run a command in a running container
+    export      Export a container's filesystem as a tar archive
+    inspect     Display detailed information on one or more containers
+    kill        Kill one or more running containers
+    logs        Fetch the logs of a container
+    ls          List containers
+    pause       Pause all processes within one or more containers
+    port        List port mappings or a specific mapping for the container
+    prune       Remove all stopped containers
+    rename      Rename a container
+    restart     Restart one or more containers
+    rm          Remove one or more containers
+    run         Run a command in a new container
+    start       Start one or more stopped containers
+    stats       Display a live stream of container(s) resource usage statistics
+    stop        Stop one or more running containers
+    top         Display the running processes of a container
+    unpause     Unpause all processes within one or more containers
+    update      Update configuration of one or more containers
+    wait        Block until one or more containers stop, then print their exit codes
+
+  Run 'docker container COMMAND --help' for more information on a command.
+  
+Container is run time of docker image
+
+
+Is there any limit to create a container with single image?
+----------------------------------------------------------
+centos.iso => i can create any numbers of VM
+docker image(centos)=> any number of containers
+
+
+Why containers are light weight not heavy like .iso file of VM?
+---------------------------------------------------------------
+Content of image
+1)software
+2)a filesystem snapshot
+3)Kernel libraries
+4)startup script
+
+Thats the reason its lightweight 
+if we have to install Tomcat image for this we dont nee dto seperately install OS. That image is having the linux os by default and all the files req to run tomcat server.
+
+All the images are present at hub.docker.com
+
+-------------------------------------------------
+Installing ubuntu container
+-------------------------------------------------
+>>docker run -it ubuntu:16.04 /bin/bash
+>>cd tmp
+>>mkdir Demo //create a directory with name Demo
+>>cd Demo
+How to create a image of our container.
+connect to ec2 instance
+>>sudo su
+>>docker container ls
+CONTAINER ID   IMAGE          COMMAND       CREATED          STATUS          PORTS     NAMES
+65ecb67bce1e   ubuntu:16.04   "/bin/bash"   14 minutes ago   Up 14 minutes             peaceful_cohen
+
+>>docker container commit peaceful_cohen new-ubuntu
+  peaceful_cohen ===>> Container-name  
+  new-ubuntu==>> image-name that will be created
+  
+Now check the images present
+>>docker image ls
+REPOSITORY    TAG       IMAGE ID       CREATED          SIZE
+new-ubuntu    latest    952bdf8f9537   11 seconds ago   135MB
+ubuntu        16.04     38b3fa4640d4   4 weeks ago      135MB
+hello-world   latest    d1165f221234   5 months ago     13.3kB
+
+
+
+How to enter a running container?
+docker exec -it <Container_name> /bin/bash
+
+ =====================    
+  1  history
+    2  ls
+    3  systemctl status docker
+    4  systemctl start docker
+    5  systemctl status docker
+    6  history
+    7  #docker start hello-world
+    8  docker image ls
+    9  docker run hello-world
+   10  docker image ls
+   11  docker run hello-world
+   12  clear
+   13  ls -l var/lib/docker
+   14  ls -l /var/lib/docker
+   15  history
+
+  

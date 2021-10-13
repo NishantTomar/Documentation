@@ -1,0 +1,84 @@
+Query to create new index with 1 primary shard and 1 replica shard
+-------------------------------------------------------------------
+PUT /products
+{
+  "settings": {
+    "number_of_shards": 1
+    , "number_of_replicas": 1
+  }
+}
+
+Delete index
+-------------
+DELETE /products
+
+Adding documents to the index.
+------------------------------
+POST /products/_doc
+{
+  "name":"Coffe Maker",
+  "price":64,
+  "stocks":10
+}
+
+Adding docs with id
+--------------------
+PUT /products/_doc/101
+{
+  "name":"Mixer",
+  "price":70,
+  "stocks":6
+}
+
+Searching in the index and getting all the documents
+------------------------------------------------------
+GET /products/_doc/_search
+
+Searching the doc with particular id
+-------------------------------------
+GET /products/_doc/100
+
+Updating the current present field value in the doc
+---------------------------------------------------
+
+ES V6.8
+
+POST /products/_doc/100/_update
+{
+  "doc":{
+    "stocks":7
+  }
+}
+
+ES V7.2
+
+POST /products/_update/100
+{
+  "doc":{
+    "stocks:7"
+  }
+}
+
+Adding new field to existing index
+-----------------------------------
+ES V6.8
+
+POST /products/_doc/100/_update
+{
+  "doc":{
+    "tags":["electronics"]
+  }
+}
+
+ES V7.2
+
+POST /products/_update/100
+{
+  "doc":{
+    "tags":["electronics"]
+  }
+}
+****************************************************************************
+# Elastic search documents are imutable
+
+
